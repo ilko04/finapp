@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Подключение манифеста -->
+<link rel="manifest" href="manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Финансовый калькулятор">
+<link rel="apple-touch-icon" href="icon-192.png">
+    <title>Финансовый калькулятор</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f9;
+        }
+        .container {
+            width: 100%;
+            max-width: 400px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-label, .result-label {
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+            font-size: 16px;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background-color: #45a049;
+        }
+        .result {
+            font-size: 14px;
+            line-height: 1.6;
+            white-space: pre-wrap;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h2>Финансовый калькулятор</h2>
+        <div class="input-group">
+            <label class="input-label" for="income">Введите сумму дохода:</label>
+            <input type="number" id="income" class="input-field" placeholder="Сумма дохода">
+        </div>
+
+        <button class="button" onclick="calculateDistribution()">Рассчитать</button>
+
+        <div class="result-group">
+            <label class="result-label">Распределение дохода:</label>
+            <div id="result" class="result"></div>
+        </div>
+    </div>
+
+    <script>
+        function calculateDistribution() {
+            let income = parseFloat(document.getElementById('income').value);
+
+            if (isNaN(income)) {
+                alert("Введите корректную сумму!");
+                return;
+            }
+
+            // 30% на депозит на цель
+            const goalCategories = {
+                "Машина": 0.10,
+                "Квартира": 0.10,
+                "Путешествие (ТАЙ)": 0.10
+            };
+            const goalTotal = income * 0.30;
+
+            // 70% на прочие расходы
+            const investmentCategories = {
+                "Крипта": 0.10,
+                "Акции": 0.10,
+                "Карманные": 0.10,
+                "Подушка безопасности": 0.20,
+                "Аренда жилья": 0.20,
+                "Продукты": 0.30
+            };
+            const investmentTotal = income * 0.70;
+
+            let resultText = "Распределение дохода:\n\n";
+
+            resultText += "Депозит на цель:\n";
+            for (const category in goalCategories) {
+                const amount = (goalTotal * goalCategories[category] / 0.30);
+                resultText += `${category}: ${amount.toFixed(2)} руб.\n`;
+            }
+            resultText += `Общая сумма в депозит: ${goalTotal.toFixed(2)} руб.\n\n`;
+
+            resultText += "Прочие расходы:\n";
+            for (const category in investmentCategories) {
+                const amount = (investmentTotal * investmentCategories[category] / 0.70);
+                resultText += `${category}: ${amount.toFixed(2)} руб.\n`;
+            }
+
+            document.getElementById('result').textContent = resultText;
+        }
+    </script>
+if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('/service-worker.js')
+        .then((registration) => {
+            console.log("Service Worker зарегистрирован:", registration);
+        })
+        .catch((error) => {
+            console.log("Ошибка регистрации Service Worker:", error);
+        });
+}
+</body>
+</html> 
