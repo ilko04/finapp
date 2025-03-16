@@ -3,12 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Подключение манифеста -->
-<link rel="manifest" href="manifest.json">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="Финансовый калькулятор">
-<link rel="apple-touch-icon" href="icon-192.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Финансовый калькулятор">
+    <link rel="apple-touch-icon" href="icon-192.png">
     <title>Финансовый калькулятор</title>
     <style>
         body {
@@ -84,47 +83,60 @@
                 return;
             }
 
-            // 30% на депозит на цель
+            // Первичное деление на 30% и 70%
+            const first30 = income * 0.30;
+            const first70 = income * 0.70;
+            
+            // Распределение 30% на 3 корзины по 10% от общей суммы
             const goalCategories = {
-                "Машина": 0.10,
-                "Квартира": 0.10,
-                "Путешествие (ТАЙ)": 0.10
+                "Корзина 1 (10%)": income * 0.10,
+                "Корзина 2 (10%)": income * 0.10,
+                "Корзина 3 (10%)": income * 0.10
             };
-            const goalTotal = income * 0.30;
-
-            // 70% на прочие расходы
+            
+            // Распределение 70% на 5 категорий
             const investmentCategories = {
-                "Крипта": 0.10,
-                "Акции": 0.10,
-                "Карманные": 0.10,
-                "Подушка безопасности": 0.20,
-                "Аренда жилья": 0.20,
-                "Продукты": 0.30
+                "Инвестиции (20%)": first70 * 0.20,
+                "Карманные (10%)": first70 * 0.10,
+                "Подушка безопасности (20%)": first70 * 0.20,
+                "Аренда жилья (20%)": first70 * 0.20,
+                "Продукты (30%)": first70 * 0.30
             };
-            const investmentTotal = income * 0.70;
 
             let resultText = "Распределение дохода:\n\n";
 
+            // Распределение 30%
             resultText += "Депозит на цель:\n";
             for (const category in goalCategories) {
-                const amount = (goalTotal * goalCategories[category] / 0.30);
+                const amount = goalCategories[category];
                 resultText += `${category}: ${amount.toFixed(2)} руб.\n`;
             }
-            resultText += `Общая сумма в депозит: ${goalTotal.toFixed(2)} руб.\n\n`;
+            resultText += `Общая сумма в депозит: ${first30.toFixed(2)} руб.\n\n`;
 
+            // Распределение 70%
             resultText += "Прочие расходы:\n";
             for (const category in investmentCategories) {
-                const amount = (investmentTotal * investmentCategories[category] / 0.70);
+                const amount = investmentCategories[category];
                 resultText += `${category}: ${amount.toFixed(2)} руб.\n`;
             }
+            resultText += `Общая сумма на расходы: ${first70.toFixed(2)} руб.\n`;
 
             document.getElementById('result').textContent = resultText;
         }
-         if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/service-worker.js')
-        .catch((error) => {}); // Ошибки не будут отображаться
-    }
+    </script>
+
+    <!-- Регистрация Service Worker -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/service-worker.js')
+                .then((registration) => {
+                    console.log("Service Worker зарегистрирован:", registration);
+                })
+                .catch((error) => {
+                    console.log("Ошибка регистрации Service Worker:", error);
+                });
+        }
     </script>
 
 </body>
-</html> 
+</html>
